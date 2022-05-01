@@ -1,0 +1,19 @@
+version: '3.7'
+
+services:
+  mongodb:
+    image: mongo:5.0
+    ports:
+      - 27017:27017
+    command: mongod --auth
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=chatapi
+      - MONGO_INITDB_ROOT_PASSWORD=chatapi
+      - MONGO_INITDB_DATABASE=chatapp
+    volumes:
+      - ./docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - mongodata:/data/db
+
+volumes:
+  mongodata:
+    driver: local

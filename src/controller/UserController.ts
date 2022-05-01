@@ -9,17 +9,17 @@ class UserController implements IUserController {
         this.api = api
     }
 
-    register = (req: Request, res: Response): void => {
+    register = async (req: Request, res: Response): Promise<void> => {
         const username = req.body.username
         const password = req.body.password
 
-        res.json(this.api.register(username, password))
+        res.json(await this.api.register(username, password))
     }
-    login = (req: Request, res: Response): void => {
+    login = async (req: Request, res: Response): Promise<void> => {
         const username = req.body.username
         const password = req.body.password
 
-        res.json(this.api.login(username, password))
+        res.json(await this.api.login(username, password))
     }
     
 }

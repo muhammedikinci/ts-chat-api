@@ -4,7 +4,7 @@ import { checkUsernameAndPassword } from "../validator";
 import IUserApi from "./IUserApi";
 import jwt from "jsonwebtoken";
 import config from "../config";
-import { ErrorMessageUserNotFound } from "./Messages";
+import { ErrorMessageUserCannotAdded, ErrorMessageUsernameExists, ErrorMessageUserNotFound, SuccessMessageUserAdded } from "./Messages";
 
 class UserApi implements IUserApi {
     repository: IUserRepository;
@@ -13,7 +13,7 @@ class UserApi implements IUserApi {
         this.repository = repository
     }
 
-    login = (username: string, password: string): LoginResponse => {
+    login = async (username: string, password: string): Promise<LoginResponse> => {
         const message = checkUsernameAndPassword(username, password)
 
         if (message != "") {
@@ -23,7 +23,7 @@ class UserApi implements IUserApi {
             }
         }
 
-        const result = this.repository.findByUsernameAndPassword(username, password)
+        const result = await this.repository.findByUsernameAndPassword(username, password)
 
         if (!result) {
             return {
@@ -39,10 +39,38 @@ class UserApi implements IUserApi {
             username
         }
     }
-    register = (username: string, password: string): RegisterResponse => {
+
+    register = async (username: string, password: string): Promise<RegisterResponse> => {
+        const message = checkUsernameAndPassword(username, password)
+
+        if (message != "") {
+            return {
+                status: false,
+                message: message
+            }
+        }
+
+        const checkUsername = await this.repository.findByUserName(username)
+
+        if (checkUsername) {
+            return {
+                status: false,
+                message: ErrorMessageUsernameExists
+            }
+        }
+
+        const result = await this.repository.registerUser(username, password)
+
+        if (!result) {
+            return {
+                status: false,
+                message: ErrorMessageUserCannotAdded
+            }
+        }
+
         return {
-            status: false,
-            message: ""
+            status: true,
+            message: SuccessMessageUserAdded
         }
     }
     
