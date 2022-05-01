@@ -1,9 +1,9 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
+import userController from "./controller/user.controller";
 
 const router = Router();
 
-router.get('/', (req: Request, res: Response) => {
-    res.send('express working with aq')
-})
+router.get('/login', userController.login)
+router.get('/register', userController.register)
 
 export default router;
