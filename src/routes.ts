@@ -1,9 +1,15 @@
 import { Router } from "express";
-import userController from "./controller/user.controller";
+import UserApi from "./api/UserApi";
+import UserController from "./controller/UserController";
+import UserRepository from "./repository/UserRepository";
 
 const router = Router();
 
-router.get('/login', userController.login)
-router.get('/register', userController.register)
+const userRepository = new UserRepository();
+const userApi = new UserApi(userRepository);
+const userController = new UserController(userApi);
+
+router.post('/login', userController.login)
+router.post('/register', userController.register)
 
 export default router;
