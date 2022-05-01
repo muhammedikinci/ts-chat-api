@@ -33,4 +33,12 @@ const checkUsernameAndPassword = (username: string, password: string): string =>
     return ""
 }
 
-export { checkUsernameAndPassword }
+export { 
+    checkUsernameAndPassword,
+    ErrorMessageAllFieldsMustBeProvided,
+    ErrorMessageUsernameCannotBeLessThen5Char,
+    ErrorMessagePasswordCannotBeLessThen8Char,
+    ErrorMessageUsernameCannotBeGreaterThen20Char,
+    ErrorMessagePasswordCannotBeGreaterThen40Char,
+    ErrorMessageUsernameCannotContainsSpecialChars
+}

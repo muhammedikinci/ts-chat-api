@@ -4,7 +4,8 @@ import { checkUsernameAndPassword } from "../validator";
 import IUserApi from "./IUserApi";
 import jwt from "jsonwebtoken";
 import config from "../config";
-import { ErrorMessageUserCannotAdded, ErrorMessageUsernameExists, ErrorMessageUserNotFound, SuccessMessageUserAdded } from "./Messages";
+import bcrypt from "bcryptjs";
+import { ErrorMessagePasswordDoesNotMatch, ErrorMessageUserCannotAdded, ErrorMessageUsernameExists, ErrorMessageUserNotFound, SuccessMessageUserAdded } from "./Messages";
 
 class UserApi implements IUserApi {
     repository: IUserRepository;
@@ -23,12 +24,21 @@ class UserApi implements IUserApi {
             }
         }
 
-        const result = await this.repository.findByUsernameAndPassword(username, password)
+        const user = await this.repository.findByUserName(username)
 
-        if (!result) {
+        if (!user) {
             return {
                 status: false,
                 message: ErrorMessageUserNotFound
+            }
+        }
+
+        const checkPasswordHash = await bcrypt.compare(password, user.password)
+
+        if (!checkPasswordHash) {
+            return {
+                status: false,
+                message: ErrorMessagePasswordDoesNotMatch
             }
         }
 
@@ -59,7 +69,10 @@ class UserApi implements IUserApi {
             }
         }
 
-        const result = await this.repository.registerUser(username, password)
+        const salt = await bcrypt.genSalt(10)
+        const hash = await bcrypt.hash(password, salt)
+
+        const result = await this.repository.registerUser(username, hash)
 
         if (!result) {
             return {
@@ -73,7 +86,6 @@ class UserApi implements IUserApi {
             message: SuccessMessageUserAdded
         }
     }
-    
 }
 
 export default UserApi
