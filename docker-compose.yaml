@@ -13,6 +13,15 @@ services:
     volumes:
       - ./docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
       - mongodata:/data/db
+  rabbitmq3:
+    container_name: "rabbitmq"
+    image: rabbitmq:3.8-management-alpine
+    environment:
+      - RABBITMQ_DEFAULT_USER=chatapi
+      - RABBITMQ_DEFAULT_PASS=chatapi
+    ports:
+      - '5672:5672'
+      - '15672:15672'
 
 volumes:
   mongodata:
