@@ -3,4 +3,9 @@ type ActiveUsers = {
     isActive: boolean
 }
 
-export { ActiveUsers }
+type MessageSender = {
+    username: string,
+    message: string
+}
+
+export { ActiveUsers, MessageSender }

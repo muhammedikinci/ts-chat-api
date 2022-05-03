@@ -8,6 +8,9 @@ class RabbitMQ extends Broker {
     userExchange: string = "user-exchange"
     userQueue: string = "user-queue";
 
+    messageExchange: string = "message-exchange"
+    messageQueue: string = "message-queue";
+
     connect = async () => {
         const url = config.get("BROKER_URL")
         const username = config.get("BROKER_USERNAME")
@@ -18,10 +21,19 @@ class RabbitMQ extends Broker {
         this.channel = await this.connection.createChannel()
 
         this.userQueue += "-" + (new Date().getTime()).toString()
+        this.messageQueue += "-" + (new Date().getTime()).toString()
 
         this.channel.assertExchange(this.userExchange, "fanout")
-        this.channel.assertQueue(this.userQueue)
+        this.channel.assertQueue(this.userQueue, {
+            autoDelete: true
+        })
         this.channel.bindQueue(this.userQueue, this.userExchange, "")
+
+        this.channel.assertExchange(this.messageExchange, "fanout")
+        this.channel.assertQueue(this.messageQueue, {
+            autoDelete: true
+        })
+        this.channel.bindQueue(this.messageQueue, this.messageExchange, "")
     }
 
     sendMessage(queue: string, message: Buffer): void {
