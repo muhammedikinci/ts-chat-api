@@ -1,5 +1,5 @@
 interface IBroker {
-    connect(queue: string): Promise<void>
+    connect(): Promise<void>
     sendMessage(queue: string, message: Buffer): void
     consumeMessage(queue: string, callback: any): void
 }

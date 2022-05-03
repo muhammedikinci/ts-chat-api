@@ -18,15 +18,21 @@ describe('User API Test', () => {
 
     const mockRepository: IUserRepository = {
         findByUsernameAndPassword: function (username: string, password: string): Promise<IUser | null> {
-            return new Promise<any>((resolve) => resolve(null));
+            return new Promise<any>((resolve) => resolve(null))
         },
         registerUser: function (username: string, password: string): Promise<IUser | null> {
-            return new Promise<any>((resolve) => resolve(new User));
+            return new Promise<any>((resolve) => resolve(new User))
         },
         findByUserName: function (username: string): Promise<IUser | null> {
             return new Promise<any>((resolve) => {
                 resolve(users.find((u) => u.username == username))
-            });
+            })
+        },
+        getAllUsers: function (): Promise<IUser[]> {
+            throw new Error("Function not implemented.")
+        },
+        setActive: function (username: string, active: boolean): Promise<boolean> {
+            throw new Error("Function not implemented.")
         }
     }
 
