@@ -2,6 +2,8 @@ version: '3.7'
 
 services:
   mongodb:
+    container_name: mongo_db
+    hostname: mongo_db
     image: mongo:5.0
     ports:
       - 27017:27017
@@ -14,14 +16,29 @@ services:
       - ./docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
       - mongodata:/data/db
   rabbitmq3:
-    container_name: "rabbitmq"
+    container_name: rabbit_mq
+    hostname: rabbit_mq
     image: rabbitmq:3.10.0-rc.6-management-alpine
     environment:
       - RABBITMQ_DEFAULT_USER=chatapi
       - RABBITMQ_DEFAULT_PASS=chatapi
     ports:
-      - '5672:5672'
-      - '15672:15672'
+      - 5672:5672
+      - 15672:15672
+  service:
+    container_name: service
+    hostname: service
+    build: .
+    environment:
+      PORT: 8291
+    expose:
+      - "8291"
+    depends_on:
+      - rabbitmq3
+      - mongodb
+    ports:
+      - 8291:8291
+    restart: on-failure
 
 volumes:
   mongodata:
