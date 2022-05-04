@@ -6,5 +6,10 @@ export default async () => {
     const password = config.get("database_password")
     const url = config.get("database_url") + '/' + config.get("database_name")
 
-    await mongoose.connect(`mongodb://${username}:${password}@${url}`)
+    try {
+        await mongoose.connect(`mongodb://${username}:${password}@${url}`)
+    } catch(error) {
+        console.error(error)
+        process.exit(1)
+    }
 }

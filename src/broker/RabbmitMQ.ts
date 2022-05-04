@@ -17,7 +17,18 @@ class RabbitMQ extends Broker {
         const password = config.get("BROKER_PASSWORD")
         const port = config.get("BROKER_PORT")
         
-        this.connection = await client.connect(`amqp://${username}:${password}@${url}:${port}`)
+        try {
+            this.connection = await client.connect(`amqp://${username}:${password}@${url}:${port}`)
+        } catch(error) {
+            console.error(error)
+            process.exit(1)
+        }
+
+        this.connection.on('error', (err) => {
+            console.error(err)
+            process.exit(1)
+        })
+
         this.channel = await this.connection.createChannel()
 
         this.userQueue += "-" + (new Date().getTime()).toString()
