@@ -34,11 +34,17 @@ describe('ChatSocket Test', () => {
         socketPort = address.port
         
     })
+
+    let socket: Socket
   
     const chatSocket = new ChatSocket(io, mockUserRepository, mockMessageRepository, mockBroker)
 
     afterEach(() => {
         sandbox.restore()
+
+        if (socket && socket.connected) {
+            socket.removeAllListeners()
+        }
     })
 
     it('getAllUsers and broker consume must work when chatSocket initializing and activeUser count must be 1', () => {
@@ -57,7 +63,6 @@ describe('ChatSocket Test', () => {
     })
 
     const token = jwt.sign({ username: "muhammed" }, config.get("private_key"));
-    let socket: Socket
 
     async function connectClient() {
         socket = Client(`http://localhost:${socketPort}`, {
@@ -188,10 +193,10 @@ describe('ChatSocket Test', () => {
         })
     })
 
-    it('when client want to send message, repositories and broker implementation works well if conversation does not start before', () => {
+    it('when client want to send message, repositories and broker implementation works well if conversation already started before', () => {
         const users: IUser[] = [
             {
-                username: "muhammed2",
+                username: "ali",
                 password: "",
                 isActive: true
             }
@@ -203,10 +208,11 @@ describe('ChatSocket Test', () => {
         
         const findBySenderAndReceiverCallback = sandbox
             .stub(mockMessageRepository, "findBySenderAndReceiver")
-            .returns(Promise.resolve(null))
+            .withArgs("muhammed", "ali")
+            .returns(Promise.resolve({sender: "", receiver: "", messages: []}))
         
         const createMessageCallback = sandbox
-            .stub(mockMessageRepository, "createMessage")
+            .stub(mockMessageRepository, "addMessage")
             .returns(Promise.resolve(null))
         
         socket.emit("sendMessage", "message")
