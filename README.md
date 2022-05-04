@@ -110,6 +110,11 @@ curl --request POST \
 npm run test
 ```
 
+## Drawings
+![Screenshot_1](https://user-images.githubusercontent.com/11901620/166815332-93068769-10e8-4f09-94dc-d005786a6803.png)
+![Screenshot_2](https://user-images.githubusercontent.com/11901620/166815391-06c73ca2-67e6-44c9-a47e-44e55abcf33a.png)
+![Screenshot_3](https://user-images.githubusercontent.com/11901620/166815412-7f77d726-e8d5-4bb4-9966-68d68c1ea7ab.png)
+
 ## Contact
 
 Muhammed İKİNCİ - muhammedikinci@outlook.com
