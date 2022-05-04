@@ -1,5 +1,4 @@
 import { Server, Socket } from 'socket.io';
-import { Server as HttpServer } from 'http';
 import IUser from '../model/IUser';
 import { authentication } from './middleware';
 import IUserRepository from '../repository/IUserRepository';
@@ -9,25 +8,19 @@ import IMessageRepository from '../repository/IMessageRepository';
 import PartialMessage from '../model/PartialMessage';
 
 class ChatSocket {
-    httpServer: HttpServer
     userRepository: IUserRepository
     messageRepository: IMessageRepository
     broker: Broker
     activeUsers: ActiveUsers[]
     io: Server
 
-    constructor(httpServer: HttpServer, userRepository: IUserRepository, messageRepository: IMessageRepository, broker: Broker) {
-        this.httpServer = httpServer
+    constructor(socketServer: Server, userRepository: IUserRepository, messageRepository: IMessageRepository, broker: Broker) {
+        this.io = socketServer
         this.userRepository = userRepository
         this.messageRepository = messageRepository
         this.broker = broker
 
         this.activeUsers = []
-        this.io = new Server(this.httpServer, {
-            cors: {
-                origin: '*'
-            }
-        })
     }
 
     initialize = async () => {
